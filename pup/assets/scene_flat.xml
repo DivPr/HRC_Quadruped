@@ -1,0 +1,52 @@
+<mujoco model="Pup flat (torque actuators)">
+  <!--
+    Stage 1 and Stage 5 scene: Pup on a flat floor with TORQUE actuators.
+
+    `ctrl[i]` is a torque in Nm, clamped to +/-20 Nm to match a real 20 Nm
+    motor. You close the PD loop yourself (pup/sim/pd.py, and again in
+    pup_sim/sim_node.py), exactly as a motor driver board would.
+
+    Solver settings here are the accurate ones (iterations="20"); the MJX scene
+    trades some of that for speed. See scene_flat_mjx.xml.
+  -->
+  <include file="pup.xml"/>
+
+  <option timestep="0.004" integrator="implicitfast"
+          iterations="20" ls_iterations="5" cone="pyramidal"/>
+
+  <visual>
+    <global offwidth="960" offheight="720"/>
+  </visual>
+
+  <worldbody>
+    <light pos="0 -1 3"/>
+    <geom name="floor" type="plane" size="0 0 0.1"
+          contype="1" conaffinity="2" rgba="0.3 0.35 0.4 1"/>
+  </worldbody>
+
+  <actuator>
+    <motor joint="FL_hip_abd"  ctrlrange="-20 20"/>
+    <motor joint="FL_hip_flex" ctrlrange="-20 20"/>
+    <motor joint="FL_knee"     ctrlrange="-20 20"/>
+    <motor joint="FR_hip_abd"  ctrlrange="-20 20"/>
+    <motor joint="FR_hip_flex" ctrlrange="-20 20"/>
+    <motor joint="FR_knee"     ctrlrange="-20 20"/>
+    <motor joint="RL_hip_abd"  ctrlrange="-20 20"/>
+    <motor joint="RL_hip_flex" ctrlrange="-20 20"/>
+    <motor joint="RL_knee"     ctrlrange="-20 20"/>
+    <motor joint="RR_hip_abd"  ctrlrange="-20 20"/>
+    <motor joint="RR_hip_flex" ctrlrange="-20 20"/>
+    <motor joint="RR_knee"     ctrlrange="-20 20"/>
+  </actuator>
+
+  <keyframe>
+    <!-- qpos = [trunk xyz | trunk quat wxyz | 12 joint angles]. ctrl is zero
+         torque, because in this scene ctrl IS torque. -->
+    <key name="home"
+         qpos="0 0 0.29 1 0 0 0  0 0.9 -1.8  0 0.9 -1.8  0 0.9 -1.8  0 0.9 -1.8"
+         ctrl="0 0 0  0 0 0  0 0 0  0 0 0"/>
+    <key name="crouch"
+         qpos="0 0 0.187054 1 0 0 0  0 1.4 -2.4  0 1.4 -2.4  0 1.4 -2.4  0 1.4 -2.4"
+         ctrl="0 0 0  0 0 0  0 0 0  0 0 0"/>
+  </keyframe>
+</mujoco>

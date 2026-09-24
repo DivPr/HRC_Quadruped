@@ -1,0 +1,33 @@
+# Stage 5 environment. From the repository root:
+#
+#   docker compose -f docker/compose.yaml build
+#   docker compose -f docker/compose.yaml run --rm ros2
+#
+# Inside the container:
+#   colcon build --symlink-install && source install/setup.bash
+#   ros2 launch pup_bringup sim2sim.launch.py
+#
+# GUI (viewer / RViz / teleop window): uncomment the DISPLAY lines below and
+# run `xhost +local:docker` on a Linux host, or start XQuartz on macOS.
+services:
+  ros2:
+    build:
+      context: ./ros2
+      dockerfile: Dockerfile
+    image: hrc/pup-ros2:jazzy
+    # DDS multicast discovery does not work across Docker's default bridge
+    # network. host networking is the simplest fix and matches how the club
+    # runs ROS 2 on NEMO.
+    network_mode: host
+    ipc: host
+    volumes:
+      - ..:/ws
+      # - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    environment:
+      - ROS_DOMAIN_ID=42
+      - PYTHONPATH=/ws
+      # - DISPLAY=${DISPLAY}
+      # - MUJOCO_GL=glx
+    working_dir: /ws/ros2_ws
+    stdin_open: true
+    tty: true

@@ -1,0 +1,143 @@
+<mujoco model="Pup">
+  <!--
+    Pup: a 12-DoF quadruped built from MuJoCo primitives only (box, capsule,
+    sphere). No meshes, so this file is the entire robot and you can read it.
+
+    Conventions (also stated in pup/envs/constants.py, which is the single
+    source of truth for code):
+      * Legs are FL, FR, RL, RR (front/rear, left/right), in that order.
+      * Each leg has hip_abd (roll, about +x), hip_flex (pitch, about +y) and
+        knee (pitch, about +y), in that order. So qpos[7:] is
+        [FL_abd, FL_flex, FL_knee, FR_abd, ..., RR_knee].
+      * BOTH sides use the same axis directions. Only the lateral offset of the
+        hip body is mirrored. A positive hip_abd therefore swings the left and
+        right legs the SAME way in world space, not symmetrically outwards.
+        This is Playground's Go1 convention and it means the policy never has
+        to learn a sign flip.
+      * Lengths are metres, angles radians, masses kilograms.
+      * Total mass is about 11.7 kg.
+
+    Collision filtering: only the four foot spheres (contype=2 conaffinity=1)
+    and the floor (contype=1 conaffinity=2, declared in the scene file) can
+    collide. Everything else is contype=0 conaffinity=0. Two geoms collide only
+    if contype1 & conaffinity2, or contype2 & conaffinity1, is nonzero -- so
+    feet hit the floor and nothing else hits anything. This keeps MJX to four
+    possible contacts, which is why it compiles and steps quickly.
+
+    The sensors live here rather than in the scene files so the plain-MuJoCo and
+    MJX scenes cannot drift apart. The contact sensors reference the floor geom
+    from the scene that includes this file; MJCF resolves names after the whole
+    model is merged, so the forward reference is fine.
+  -->
+  <compiler angle="radian"/>
+
+  <default>
+    <joint damping="1.0" armature="0.03"/>
+    <geom contype="0" conaffinity="0" friction="0.8 0.005 0.0001" solimp="0.9 0.95 0.023"/>
+    <default class="thigh">
+      <geom type="capsule" fromto="0 0 0 0 0 -0.2" size="0.018" mass="0.6" rgba="0.2 0.25 0.3 1"/>
+    </default>
+    <default class="shank">
+      <geom type="capsule" fromto="0 0 0 0 0 -0.2" size="0.014" mass="0.4"/>
+    </default>
+    <default class="foot">
+      <geom type="sphere" pos="0 0 -0.2" size="0.02" mass="0.04"
+            contype="2" conaffinity="1" rgba="0.1 0.1 0.1 1"/>
+    </default>
+  </default>
+
+  <worldbody>
+    <body name="trunk" pos="0 0 0.29">
+      <freejoint name="root"/>
+      <geom name="trunk_geom" type="box" size="0.19 0.075 0.05" mass="5.5" rgba="0.85 0.65 0.18 1"/>
+      <site name="imu" size="0.005"/>
+
+      <!-- Front left -->
+      <body name="FL_hip" pos="0.19 0.075 -0.025">
+        <joint name="FL_hip_abd" axis="1 0 0" range="-0.8 0.8"/>
+        <geom type="capsule" fromto="0 0 0 0 0.04 0" size="0.025" mass="0.5"/>
+        <body name="FL_thigh" pos="0 0.04 0">
+          <joint name="FL_hip_flex" axis="0 1 0" range="-1 2.5"/>
+          <geom class="thigh"/>
+          <body name="FL_shank" pos="0 0 -0.2">
+            <joint name="FL_knee" axis="0 1 0" range="-2.6 -0.9"/>
+            <geom class="shank"/>
+            <geom name="FL_foot" class="foot"/>
+            <site name="FL_foot_site" pos="0 0 -0.2" size="0.005"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- Front right -->
+      <body name="FR_hip" pos="0.19 -0.075 -0.025">
+        <joint name="FR_hip_abd" axis="1 0 0" range="-0.8 0.8"/>
+        <geom type="capsule" fromto="0 0 0 0 -0.04 0" size="0.025" mass="0.5"/>
+        <body name="FR_thigh" pos="0 -0.04 0">
+          <joint name="FR_hip_flex" axis="0 1 0" range="-1 2.5"/>
+          <geom class="thigh"/>
+          <body name="FR_shank" pos="0 0 -0.2">
+            <joint name="FR_knee" axis="0 1 0" range="-2.6 -0.9"/>
+            <geom class="shank"/>
+            <geom name="FR_foot" class="foot"/>
+            <site name="FR_foot_site" pos="0 0 -0.2" size="0.005"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- Rear left -->
+      <body name="RL_hip" pos="-0.19 0.075 -0.025">
+        <joint name="RL_hip_abd" axis="1 0 0" range="-0.8 0.8"/>
+        <geom type="capsule" fromto="0 0 0 0 0.04 0" size="0.025" mass="0.5"/>
+        <body name="RL_thigh" pos="0 0.04 0">
+          <joint name="RL_hip_flex" axis="0 1 0" range="-1 2.5"/>
+          <geom class="thigh"/>
+          <body name="RL_shank" pos="0 0 -0.2">
+            <joint name="RL_knee" axis="0 1 0" range="-2.6 -0.9"/>
+            <geom class="shank"/>
+            <geom name="RL_foot" class="foot"/>
+            <site name="RL_foot_site" pos="0 0 -0.2" size="0.005"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- Rear right -->
+      <body name="RR_hip" pos="-0.19 -0.075 -0.025">
+        <joint name="RR_hip_abd" axis="1 0 0" range="-0.8 0.8"/>
+        <geom type="capsule" fromto="0 0 0 0 -0.04 0" size="0.025" mass="0.5"/>
+        <body name="RR_thigh" pos="0 -0.04 0">
+          <joint name="RR_hip_flex" axis="0 1 0" range="-1 2.5"/>
+          <geom class="thigh"/>
+          <body name="RR_shank" pos="0 0 -0.2">
+            <joint name="RR_knee" axis="0 1 0" range="-2.6 -0.9"/>
+            <geom class="shank"/>
+            <geom name="RR_foot" class="foot"/>
+            <site name="RR_foot_site" pos="0 0 -0.2" size="0.005"/>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <sensor>
+    <!-- Things a real robot can measure. These are allowed in the observation. -->
+    <gyro name="gyro" site="imu"/>
+    <accelerometer name="accelerometer" site="imu"/>
+    <framequat name="orientation" objtype="body" objname="trunk"/>
+
+    <!-- PRIVILEGED: ground truth from the simulator. Rewards and evaluation
+         only -- putting these in the observation trains a policy that cannot
+         be deployed. -->
+    <framelinvel name="global_linvel" objtype="body" objname="trunk"/>
+    <frameangvel name="global_angvel" objtype="body" objname="trunk"/>
+    <framezaxis name="upvector" objtype="body" objname="trunk"/>
+
+    <!-- Foot contacts. `data="found"` makes each sensor a single number: 1 when
+         the two geoms touch, 0 otherwise. This is the supported way to read
+         contacts under both the JAX and Warp backends; do not poke at
+         mjx.Data.contact. -->
+    <contact name="FL_foot_contact" geom1="FL_foot" geom2="floor" reduce="mindist" num="1" data="found"/>
+    <contact name="FR_foot_contact" geom1="FR_foot" geom2="floor" reduce="mindist" num="1" data="found"/>
+    <contact name="RL_foot_contact" geom1="RL_foot" geom2="floor" reduce="mindist" num="1" data="found"/>
+    <contact name="RR_foot_contact" geom1="RR_foot" geom2="floor" reduce="mindist" num="1" data="found"/>
+  </sensor>
+</mujoco>

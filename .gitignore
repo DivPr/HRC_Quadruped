@@ -1,0 +1,23 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+runs/
+ros2_ws/build/
+ros2_ws/install/
+ros2_ws/log/
+.DS_Store
+.vscode/
+.idea/
+MUJOCO_LOG.TXT
+.pup_progress.json
+*.log
+
+# NOTE: results/ is deliberately NOT ignored -- your learning curve, eval JSONs
+# and GIFs are part of the submission (see SUBMISSION.md).
+
+# The agent-facing build spec lives on the `solution` branch only; this keeps
+# it from being re-committed here when you switch branches.
+ONBOARDING_SPEC.md

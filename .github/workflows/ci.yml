@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main, solution]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python:
+    name: CPU tests (Stages 1-4)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      MUJOCO_GL: osmesa
+      JAX_PLATFORMS: cpu
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install OSMesa (headless MuJoCo rendering)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libosmesa6 libgl1 libglfw3
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Sync environment
+        run: uv sync --locked --dev
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Setup check
+        run: uv run python scripts/check_setup.py
+
+      # Student TODOs raise NotImplementedError, which conftest.py reports as
+      # "not started" (a skip), not a failure. So this job is green on the
+      # starter `main` for all provided code, and green on `solution` for
+      # everything.
+      - name: Fast tests
+        run: uv run pytest -m "not gpu and not ros and not slow" -q
+
+      - name: Slow tests (PPO smoke)
+        timeout-minutes: 15
+        run: uv run pytest -m "slow and not gpu and not ros" -q
+
+      - name: Progress report
+        if: always()
+        run: uv run python scripts/progress.py --no-run
+
+  ros2:
+    name: ROS 2 sim2sim (Stage 5)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build the ROS 2 image
+        run: docker build -t hrc/pup-ros2:jazzy docker/ros2
+
+      - name: Run the Stage 5 smoke test
+        run: |
+          docker run --rm \
+            -v "${{ github.workspace }}:/ws" \
+            -e ROS_DOMAIN_ID=42 \
+            -w /ws/ros2_ws \
+            hrc/pup-ros2:jazzy \
+            /ws/tests/test_05_ros2_smoke.sh

@@ -1,0 +1,61 @@
+<mujoco model="Pup flat (position actuators, MJX-tuned)">
+  <!--
+    Stage 3 and Stage 4 scene: the same robot and the same floor, but with
+    POSITION actuators and MJX-friendly solver settings.
+
+    Two differences from scene_flat.xml, both deliberate:
+
+    1. `<position kp="25" kv="0.5" forcerange="-20 20">`. Now `ctrl[i]` is a
+       TARGET ANGLE in radians and MuJoCo runs the PD loop internally, at
+       physics rate (250 Hz), while the policy only updates targets at 50 Hz.
+       Same equation you wrote in Stage 1 -- verify that yourself with
+       tests/test_01_pd.py::test_matches_position_actuator. The force limit is
+       still 20 Nm.
+
+    2. `iterations="1" ls_iterations="5"` instead of 20/5. These are
+       Playground's Go1 values. Fewer solver iterations means a slightly less
+       accurate contact solve in exchange for a much cheaper step, which is the
+       right trade when you are running 8192 robots and averaging over them.
+       The `home` keyframe still holds statically -- test_03_env.py checks it.
+  -->
+  <include file="pup.xml"/>
+
+  <option timestep="0.004" integrator="implicitfast"
+          iterations="1" ls_iterations="5" cone="pyramidal"/>
+
+  <visual>
+    <global offwidth="960" offheight="720"/>
+  </visual>
+
+  <worldbody>
+    <light pos="0 -1 3"/>
+    <geom name="floor" type="plane" size="0 0 0.1"
+          contype="1" conaffinity="2" rgba="0.3 0.35 0.4 1"/>
+  </worldbody>
+
+  <actuator>
+    <position joint="FL_hip_abd"  kp="25" kv="0.5" forcerange="-20 20"/>
+    <position joint="FL_hip_flex" kp="25" kv="0.5" forcerange="-20 20"/>
+    <position joint="FL_knee"     kp="25" kv="0.5" forcerange="-20 20"/>
+    <position joint="FR_hip_abd"  kp="25" kv="0.5" forcerange="-20 20"/>
+    <position joint="FR_hip_flex" kp="25" kv="0.5" forcerange="-20 20"/>
+    <position joint="FR_knee"     kp="25" kv="0.5" forcerange="-20 20"/>
+    <position joint="RL_hip_abd"  kp="25" kv="0.5" forcerange="-20 20"/>
+    <position joint="RL_hip_flex" kp="25" kv="0.5" forcerange="-20 20"/>
+    <position joint="RL_knee"     kp="25" kv="0.5" forcerange="-20 20"/>
+    <position joint="RR_hip_abd"  kp="25" kv="0.5" forcerange="-20 20"/>
+    <position joint="RR_hip_flex" kp="25" kv="0.5" forcerange="-20 20"/>
+    <position joint="RR_knee"     kp="25" kv="0.5" forcerange="-20 20"/>
+  </actuator>
+
+  <keyframe>
+    <!-- Here ctrl is a joint TARGET, so it equals the keyframe's joint angles:
+         reset to a keyframe and the robot is already commanded to hold it. -->
+    <key name="home"
+         qpos="0 0 0.29 1 0 0 0  0 0.9 -1.8  0 0.9 -1.8  0 0.9 -1.8  0 0.9 -1.8"
+         ctrl="0 0.9 -1.8  0 0.9 -1.8  0 0.9 -1.8  0 0.9 -1.8"/>
+    <key name="crouch"
+         qpos="0 0 0.187054 1 0 0 0  0 1.4 -2.4  0 1.4 -2.4  0 1.4 -2.4  0 1.4 -2.4"
+         ctrl="0 1.4 -2.4  0 1.4 -2.4  0 1.4 -2.4  0 1.4 -2.4"/>
+  </keyframe>
+</mujoco>

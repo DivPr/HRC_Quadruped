@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools==82.0.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hrc-pup"
+version = "0.1.0"
+description = "Purdue HRC Fall 2026 robotics onboarding"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+  "mujoco==3.13.0", "mujoco-mjx==3.13.0", "jax==0.8.2",
+  "jaxlib==0.8.2", "brax==0.14.2", "playground==0.2.0",
+  "numpy==2.4.6", "flax==0.12.2", "ml-collections==1.1.0",
+  "orbax-checkpoint==0.12.4", "mediapy==1.2.7", "matplotlib==3.11.2",
+  "pillow==12.3.0", "warp-lang==1.17.0",
+]
+
+[project.optional-dependencies]
+gpu = ["jax[cuda12]==0.8.2; sys_platform == 'linux'", "mujoco-mjx[warp]==3.13.0"]
+dev = ["pytest==9.1.1", "ruff==0.16.7"]
+
+[dependency-groups]
+dev = ["pytest==9.1.1", "ruff==0.16.7"]
+
+[tool.setuptools.packages.find]
+include = ["pup*"]
+
+[tool.setuptools.package-data]
+pup = ["assets/*.xml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["cpu: CPU-compatible tests", "slow: CPU PPO smoke test", "gpu: requires NVIDIA GPU", "ros: requires ROS 2 container"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+extend-exclude = ["ros2_ws/build", "ros2_ws/install", "ros2_ws/log"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "D2", "D4"]
+ignore = ["D203", "D212", "D213", "D404", "D406", "D407", "D413", "D415"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["D"]
+"scripts/*" = ["D"]
+"notebooks/*" = ["E401", "E402", "E702", "I001"]
+# --- starter branch only -------------------------------------------------
+# Unfinished TODO blocks leave imports unused (F401) and, where later lines
+# consume names the student is meant to define, undefined (F821). Both rules
+# come back automatically once the blocks are filled in -- and on `solution`,
+# which is linted with none of these exemptions.
+"pup/sim/standup.py" = ["F401"]
+"pup/jaxlab/*.py" = ["F401"]
+"pup/train/export.py" = ["F401"]
+"pup/train/train_ppo.py" = ["F401", "F821"]
+"pup/envs/pup_joystick.py" = ["F821"]
+"ros2_ws/src/pup_bringup/launch/*.py" = ["F401"]
+"ros2_ws/src/pup_bringup/pup_bringup/*.py" = ["F401"]
+
+
+[tool.ruff.lint.isort]
+# ROS 2 message packages are first-party inside the container but not on the
+# host, so pin them here to keep import order stable in both places.
+known-first-party = ["pup", "pup_sim", "pup_bringup", "pup_interfaces"]
