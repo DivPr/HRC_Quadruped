@@ -1,9 +1,9 @@
 # Submission — HRC Software Onboarding Fall 2026
 
-**Name:**
-**Discord handle:**
-**Repository:**
-**Date:**
+**Name: Divyansh Pramanick**
+**Discord handle: divpr**
+**Repository: HRC_Quadruped**
+**Date: 9/25/26**
 
 ---
 
