@@ -28,22 +28,19 @@ import jax.numpy as jnp
 def absolute_value(x: jax.Array) -> jax.Array:
     """Return elementwise absolute values, same shape and units as x."""
     # ===== TODO(student): Replace Python branching with array selection =====
-    raise NotImplementedError(
-        "Stage 2: Replace Python branching with array selection. See docs/02_jax_for_robotics.md")
+    return jnp.where(x > 0, x, -x)
     # ===== end TODO =====
 
 
 def replace_element(values: jax.Array, index: jax.Array, value: jax.Array) -> jax.Array:
     """Return a new (N,) array with one element replaced; preserve input/units."""
     # ===== TODO(student): Perform an immutable indexed update =====
-    raise NotImplementedError(
-        "Stage 2: Perform an immutable indexed update. See docs/02_jax_for_robotics.md")
+    return values.at[index].set(value)
     # ===== end TODO =====
 
 
 def sum_indices(count: jax.Array) -> jax.Array:
     """Sum integers 0 through count-1; scalar int input/output, no units."""
     # ===== TODO(student): Sum using a traced loop bound =====
-    raise NotImplementedError(
-        "Stage 2: Sum using a traced loop bound. See docs/02_jax_for_robotics.md")
+    return jax.lax.fori_loop(0, count, lambda i, total: total + i, 0)
     # ===== end TODO =====
