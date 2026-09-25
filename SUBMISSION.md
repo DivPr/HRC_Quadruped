@@ -10,7 +10,7 @@
 ## Stage checklist
 
 - [X] **Stage 0** — Setup. `scripts/check_setup.py` exits 0.
-- [ ] **Stage 1** — MuJoCo + PD controller. Tests green.
+- [X] **Stage 1** — MuJoCo + PD controller. Tests green.
 - [ ] **Stage 2** — JAX exercises. Tests green.
 - [ ] **Stage 3** — MJX environment. Tests green.
 - [ ] **Stage 4** — Brax PPO. Trained a policy, exported it, `NumpyPolicy` matches.
@@ -79,7 +79,7 @@ One paragraph. This is will help us improve onboarding.
 | Stage | Hours |
 |---|---|
 | 0 Setup | .5 hrs|
-| 1 MuJoCo + PD | |
+| 1 MuJoCo + PD |2 hrs|
 | 2 JAX | |
 | 3 MJX env | |
 | 4 Brax + export | |
