@@ -1,0 +1,134 @@
+<mujoco model="Pup flat (torque actuators)">
+  <!--
+    Stage 1 and Stage 5 scene: Pup on a flat floor with TORQUE actuators.
+
+    `ctrl[i]` is a torque in Nm, clamped to +/-20 Nm to match a real 20 Nm
+    motor. You close the PD loop yourself (pup/sim/pd.py, and again in
+    pup_sim/sim_node.py), exactly as a motor driver board would.
+
+    Solver settings here are the accurate ones (iterations="20"); the MJX scene
+    trades some of that for speed. See scene_flat_mjx.xml.
+  -->
+  <compiler angle="radian"/>
+
+  <option timestep="0.004" integrator="implicitfast" iterations="20" ls_iterations="5"/>
+
+  <size nkey="2"/>
+
+  <visual>
+    <global offwidth="960" offheight="720"/>
+  </visual>
+
+  <default>
+    <joint armature="0.03" damping="1"/>
+    <geom contype="0" conaffinity="0" friction="0.8" solimp="0.9 0.95 0.023"/>
+    <default class="thigh">
+      <geom size="0.018 0 0" type="capsule" rgba="0.2 0.25 0.3 1"/>
+    </default>
+    <default class="shank">
+      <geom size="0.014 0 0" type="capsule"/>
+    </default>
+    <default class="foot">
+      <geom size="0.02 0 0" contype="2" conaffinity="1" rgba="0.1 0.1 0.1 1"/>
+    </default>
+  </default>
+
+  <worldbody>
+    <geom name="floor" size="0 0 0.1" type="plane" contype="1" conaffinity="2" rgba="0.3 0.35 0.4 1"/>
+    <light pos="0 -1 3"/>
+    <body name="trunk" pos="0 0 0.29">
+      <joint name="root" type="free" armature="0" damping="0"/>
+      <geom name="trunk_geom" size="0.19 0.075 0.05" type="box" rgba="0.85 0.65 0.18 1" mass="5.5"/>
+      <site name="imu"/>
+      <body name="FL_hip" pos="0.19 0.075 -0.025">
+        <joint name="FL_hip_abd" range="-0.8 0.8" axis="1 0 0"/>
+        <geom size="0.025 0.02" pos="0 0.02 0" quat="0.707107 0.707107 0 0" type="capsule" mass="0.5"/>
+        <body name="FL_thigh" pos="0 0.04 0">
+          <joint name="FL_hip_flex" range="-1 2.5" axis="0 1 0"/>
+          <geom class="thigh" size="0.018 0.1" pos="0 0 -0.1" mass="0.6"/>
+          <body name="FL_shank" pos="0 0 -0.2">
+            <joint name="FL_knee" range="-2.6 -0.9" axis="0 1 0"/>
+            <geom class="shank" size="0.014 0.1" pos="0 0 -0.1" mass="0.4"/>
+            <geom name="FL_foot" class="foot" pos="0 0 -0.2" mass="0.04"/>
+            <site name="FL_foot_site" pos="0 0 -0.2"/>
+          </body>
+        </body>
+      </body>
+      <body name="FR_hip" pos="0.19 -0.075 -0.025">
+        <joint name="FR_hip_abd" range="-0.8 0.8" axis="1 0 0"/>
+        <geom size="0.025 0.02" pos="0 -0.02 0" quat="0.707107 -0.707107 0 0" type="capsule" mass="0.5"/>
+        <body name="FR_thigh" pos="0 -0.04 0">
+          <joint name="FR_hip_flex" range="-1 2.5" axis="0 1 0"/>
+          <geom class="thigh" size="0.018 0.1" pos="0 0 -0.1" mass="0.6"/>
+          <body name="FR_shank" pos="0 0 -0.2">
+            <joint name="FR_knee" range="-2.6 -0.9" axis="0 1 0"/>
+            <geom class="shank" size="0.014 0.1" pos="0 0 -0.1" mass="0.4"/>
+            <geom name="FR_foot" class="foot" pos="0 0 -0.2" mass="0.04"/>
+            <site name="FR_foot_site" pos="0 0 -0.2"/>
+          </body>
+        </body>
+      </body>
+      <body name="RL_hip" pos="-0.19 0.075 -0.025">
+        <joint name="RL_hip_abd" range="-0.8 0.8" axis="1 0 0"/>
+        <geom size="0.025 0.02" pos="0 0.02 0" quat="0.707107 0.707107 0 0" type="capsule" mass="0.5"/>
+        <body name="RL_thigh" pos="0 0.04 0">
+          <joint name="RL_hip_flex" range="-1 2.5" axis="0 1 0"/>
+          <geom class="thigh" size="0.018 0.1" pos="0 0 -0.1" mass="0.6"/>
+          <body name="RL_shank" pos="0 0 -0.2">
+            <joint name="RL_knee" range="-2.6 -0.9" axis="0 1 0"/>
+            <geom class="shank" size="0.014 0.1" pos="0 0 -0.1" mass="0.4"/>
+            <geom name="RL_foot" class="foot" pos="0 0 -0.2" mass="0.04"/>
+            <site name="RL_foot_site" pos="0 0 -0.2"/>
+          </body>
+        </body>
+      </body>
+      <body name="RR_hip" pos="-0.19 -0.075 -0.025">
+        <joint name="RR_hip_abd" range="-0.8 0.8" axis="1 0 0"/>
+        <geom size="0.025 0.02" pos="0 -0.02 0" quat="0.707107 -0.707107 0 0" type="capsule" mass="0.5"/>
+        <body name="RR_thigh" pos="0 -0.04 0">
+          <joint name="RR_hip_flex" range="-1 2.5" axis="0 1 0"/>
+          <geom class="thigh" size="0.018 0.1" pos="0 0 -0.1" mass="0.6"/>
+          <body name="RR_shank" pos="0 0 -0.2">
+            <joint name="RR_knee" range="-2.6 -0.9" axis="0 1 0"/>
+            <geom class="shank" size="0.014 0.1" pos="0 0 -0.1" mass="0.4"/>
+            <geom name="RR_foot" class="foot" pos="0 0 -0.2" mass="0.04"/>
+            <site name="RR_foot_site" pos="0 0 -0.2"/>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <general joint="FL_hip_abd" ctrlrange="-20 20"/>
+    <general joint="FL_hip_flex" ctrlrange="-20 20"/>
+    <general joint="FL_knee" ctrlrange="-20 20"/>
+    <general joint="FR_hip_abd" ctrlrange="-20 20"/>
+    <general joint="FR_hip_flex" ctrlrange="-20 20"/>
+    <general joint="FR_knee" ctrlrange="-20 20"/>
+    <general joint="RL_hip_abd" ctrlrange="-20 20"/>
+    <general joint="RL_hip_flex" ctrlrange="-20 20"/>
+    <general joint="RL_knee" ctrlrange="-20 20"/>
+    <general joint="RR_hip_abd" ctrlrange="-20 20"/>
+    <general joint="RR_hip_flex" ctrlrange="-20 20"/>
+    <general joint="RR_knee" ctrlrange="-20 20"/>
+  </actuator>
+
+  <sensor>
+    <gyro site="imu" name="gyro"/>
+    <accelerometer site="imu" name="accelerometer"/>
+    <framequat objtype="body" objname="trunk" name="orientation"/>
+    <framelinvel objtype="body" objname="trunk" name="global_linvel"/>
+    <frameangvel objtype="body" objname="trunk" name="global_angvel"/>
+    <framezaxis objtype="body" objname="trunk" name="upvector"/>
+    <contact geom1="FL_foot" geom2="floor" reduce="mindist" name="FL_foot_contact"/>
+    <contact geom1="FR_foot" geom2="floor" reduce="mindist" name="FR_foot_contact"/>
+    <contact geom1="RL_foot" geom2="floor" reduce="mindist" name="RL_foot_contact"/>
+    <contact geom1="RR_foot" geom2="floor" reduce="mindist" name="RR_foot_contact"/>
+  </sensor>
+
+  <keyframe>
+    <key name="home" qpos="0 0 0.29 1 0 0 0 0 0.9 -1.8 0 0.9 -1.8 0 0.9 -1.8 0 0.9 -1.8"/>
+    <key name="crouch" qpos="0 0 0.187054 1 0 0 0 0 1.4 -2.4 0 1.4 -2.4 0 1.4 -2.4 0 1.4 -2.4"/>
+  </keyframe>
+</mujoco>
