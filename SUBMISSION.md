@@ -78,7 +78,7 @@ One paragraph. This is will help us improve onboarding.
 
 | Stage | Hours |
 |---|---|
-| 0 Setup | 1.5 hrs|
+| 0 Setup | .5 hrs|
 | 1 MuJoCo + PD | |
 | 2 JAX | |
 | 3 MJX env | |
