@@ -14,8 +14,6 @@ class PDController:
         self.kp = kp
         self.kd = kd
         self.torque_limit = torque_limit
-        raise NotImplementedError(
-            "Stage 1: Store the PD gains and torque limit. See docs/01_mujoco_and_pd.md")
         # ===== end TODO =====
 
     def __call__(self, q: np.ndarray, qd: np.ndarray, q_des: np.ndarray,
@@ -27,8 +25,6 @@ class PDController:
         torque = self.kp * (q_des - q) + self.kd * (qd_des - qd)
         torque = np.clip(torque, -self.torque_limit, self.torque_limit)
         return torque
-        raise NotImplementedError(
-            "Stage 1: Calculate and clip joint torques. See docs/01_mujoco_and_pd.md")
         # ===== end TODO =====
 
 
@@ -38,6 +34,4 @@ def joint_state(model: mujoco.MjModel, data: mujoco.MjData) -> tuple[np.ndarray,
     q = data.qpos[7:].copy()
     qd = data.qvel[6:].copy()
     return q, qd
-    raise NotImplementedError(
-        "Stage 1: Slice joint positions and velocities past the free root. See docs/01_mujoco_and_pd.md")
     # ===== end TODO =====
