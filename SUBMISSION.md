@@ -11,7 +11,7 @@
 
 - [X] **Stage 0** — Setup. `scripts/check_setup.py` exits 0.
 - [X] **Stage 1** — MuJoCo + PD controller. Tests green.
-- [ ] **Stage 2** — JAX exercises. Tests green.
+- [X] **Stage 2** — JAX exercises. Tests green.
 - [ ] **Stage 3** — MJX environment. Tests green.
 - [ ] **Stage 4** — Brax PPO. Trained a policy, exported it, `NumpyPolicy` matches.
 - [ ] **Stage 5** — ROS 2 sim2sim. Smoke test green, teleop GIF recorded.
@@ -78,9 +78,9 @@ One paragraph. This is will help us improve onboarding.
 
 | Stage | Hours |
 |---|---|
-| 0 Setup | .5 hrs|
-| 1 MuJoCo + PD |2 hrs|
-| 2 JAX | |
+| 0 Setup | .5 hours|
+| 1 MuJoCo + PD |2 hours|
+| 2 JAX |1 hour|
 | 3 MJX env | |
 | 4 Brax + export | |
 | 5 ROS 2 | |
