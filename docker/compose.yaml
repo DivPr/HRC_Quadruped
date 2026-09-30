@@ -22,12 +22,12 @@ services:
     ipc: host
     volumes:
       - ..:/ws
-      # - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
     environment:
       - ROS_DOMAIN_ID=42
       - PYTHONPATH=/ws
-      # - DISPLAY=${DISPLAY}
-      # - MUJOCO_GL=glx
+      - DISPLAY=${DISPLAY}
+      - MUJOCO_GL=glx
     working_dir: /ws/ros2_ws
     stdin_open: true
     tty: true
