@@ -226,7 +226,7 @@ Teleop GIF: `results/sim2sim_teleop.gif`
 
 ```
 
-Measured `/pup/joint_command` rate from `ros2 topic hz`:
+Measured `/pup/joint_command` rate from `ros2 topic hz`: 49.97 Hz
 
 ## Escape hatches used
 
