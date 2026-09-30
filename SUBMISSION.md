@@ -14,7 +14,7 @@
 - [X] **Stage 2** — JAX exercises. Tests green.
 - [X] **Stage 3** — MJX environment. Tests green.
 - [X] **Stage 4** — Brax PPO. Trained a policy, exported it, `NumpyPolicy` matches.
-- [ ] **Stage 5** — ROS 2 sim2sim. Smoke test green, teleop GIF recorded.
+- [X] **Stage 5** — ROS 2 sim2sim. Smoke test green, teleop GIF recorded.
 
 ## `scripts/progress.py` output
 
@@ -129,6 +129,8 @@ Rollout GIF: `results/training.gif`
 ```
 
 Did it meet the acceptance criteria (`"walking_passes": true`)?
+
+Yes
 
 ## Stage 5 — sim2sim results
 
